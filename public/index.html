@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Respiración & yoga</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header>
+    <h1 id="h-title">Respiración guiada</h1>
+    <p class="sub" id="h-sub">Inhala · retén · exhala · vacío — con señales opcionales.</p>
+    <div class="lang">
+      <button type="button" id="l-es" class="is-on">ES</button>
+      <button type="button" id="l-en">EN</button>
+    </div>
+  </header>
+  <div class="tabs">
+    <button type="button" id="tab-b" class="is-on">Breath</button>
+    <button type="button" id="tab-y">Yoga</button>
+  </div>
+  <section class="panel is-on" id="p-breath">
+    <div class="grid4">
+      <label><span id="lb-in">Inhala (s)</span><input type="number" id="in" min="1" max="30" value="4"></label>
+      <label><span id="lb-h1">Retén (s)</span><input type="number" id="h1" min="0" max="30" value="4"></label>
+      <label><span id="lb-ex">Exhala (s)</span><input type="number" id="ex" min="1" max="30" value="4"></label>
+      <label><span id="lb-h2">Vacío (s)</span><input type="number" id="h2" min="0" max="30" value="4"></label>
+    </div>
+    <div class="row">
+      <label><input type="checkbox" id="beep"> <span id="lb-beep">Pitido</span></label>
+      <label><input type="checkbox" id="voice" checked> <span id="lb-voice">Voz</span></label>
+    </div>
+    <div class="big">
+      <div class="phase" id="phase">—</div>
+      <div class="n" id="num">0</div>
+    </div>
+    <div class="actions">
+      <button type="button" class="primary" id="start">Iniciar</button>
+      <button type="button" class="danger" id="stop" hidden>Detener</button>
+    </div>
+  </section>
+  <section class="panel" id="p-yoga">
+    <div id="yoga-list"></div>
+  </section>
+  <footer><a href="https://garganosofia.github.io/sofia-gargano-cv/">CV Sofía Gárgano</a></footer>
+  <script src="app.js"></script>
+</body>
+</html>
