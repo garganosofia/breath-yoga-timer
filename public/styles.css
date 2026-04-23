@@ -135,6 +135,55 @@ input[type="number"] {
   line-height: 1;
 }
 
+.big .elapsed {
+  margin-top: 0.65rem;
+  font-family: ui-monospace, "JetBrains Mono", monospace;
+  font-size: 0.85rem;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+}
+
+.hold-label {
+  margin: 0 0 0.5rem;
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.chips-row {
+  display: flex;
+  gap: 0.45rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.chip {
+  flex: 1;
+  min-width: 72px;
+  padding: 0.55rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--card);
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.chip:hover {
+  color: var(--text);
+  border-color: rgba(0, 230, 200, 0.35);
+}
+
+.chip.is-on {
+  color: var(--bg);
+  background: linear-gradient(135deg, var(--cyan), #00a896);
+  border-color: transparent;
+}
+
 .actions {
   display: flex;
   gap: 0.5rem;

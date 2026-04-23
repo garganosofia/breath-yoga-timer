@@ -14,6 +14,12 @@ const T = {
     breathTab: "Respiración",
     yogaTab: "Yoga",
     yogaIntro: "Secuencia suave — mantené cada postura con respiración nasal.",
+    hold: "Mantener durante",
+    unl: "Sin límite",
+    min5: "5 min",
+    min10: "10 min",
+    min15: "15 min",
+    done: "Sesión completa",
   },
   en: {
     title: "Guided breathing",
@@ -30,6 +36,12 @@ const T = {
     breathTab: "Breath",
     yogaTab: "Yoga",
     yogaIntro: "Gentle sequence — hold each pose with nasal breathing.",
+    hold: "Hold for",
+    unl: "No limit",
+    min5: "5 min",
+    min10: "10 min",
+    min15: "15 min",
+    done: "Session complete",
   },
 };
 
@@ -57,6 +69,8 @@ let tick = null;
 let phaseI = 0;
 let left = 0;
 let seq = [];
+let duration = 0;
+let elapsed = 0;
 
 function speak(text) {
   if (!document.getElementById("voice").checked) return;
@@ -102,7 +116,30 @@ function applyLang() {
   document.getElementById("stop").textContent = x.stop;
   document.getElementById("tab-b").textContent = x.breathTab;
   document.getElementById("tab-y").textContent = x.yogaTab;
+  document.getElementById("lb-hold").textContent = x.hold;
+  document.getElementById("c-unl").textContent = x.unl;
+  document.getElementById("c-5").textContent = x.min5;
+  document.getElementById("c-10").textContent = x.min10;
+  document.getElementById("c-15").textContent = x.min15;
   renderYoga();
+}
+
+function fmtTime(totalSeconds) {
+  const m = Math.floor(totalSeconds / 60);
+  const s = totalSeconds % 60;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
+}
+
+function updateElapsed() {
+  const el = document.getElementById("elapsed");
+  if (duration > 0) {
+    el.hidden = false;
+    const remaining = Math.max(0, duration - elapsed);
+    el.textContent = `${fmtTime(elapsed)} / ${fmtTime(duration)} · ${fmtTime(remaining)}`;
+  } else {
+    el.hidden = false;
+    el.textContent = fmtTime(elapsed);
+  }
 }
 
 function renderYoga() {
@@ -141,6 +178,12 @@ function nextPhase() {
 }
 
 function step() {
+  elapsed += 1;
+  if (duration > 0 && elapsed >= duration) {
+    updateElapsed();
+    finishSession();
+    return;
+  }
   left -= 1;
   if (left <= 0) {
     phaseI += 1;
@@ -149,6 +192,20 @@ function step() {
   } else {
     document.getElementById("num").textContent = String(left);
   }
+  updateElapsed();
+}
+
+function finishSession() {
+  if (tick) window.clearInterval(tick);
+  tick = null;
+  window.speechSynthesis.cancel();
+  document.getElementById("start").hidden = false;
+  document.getElementById("stop").hidden = true;
+  document.getElementById("phase").textContent = T[lang].done;
+  document.getElementById("num").textContent = "0";
+  speak(T[lang].done);
+  beep();
+  buzz();
 }
 
 document.getElementById("l-es").onclick = () => {
@@ -177,14 +234,24 @@ document.getElementById("tab-y").onclick = () => {
   document.getElementById("p-breath").classList.remove("is-on");
 };
 
+document.querySelectorAll(".chip").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".chip").forEach((b) => b.classList.remove("is-on"));
+    btn.classList.add("is-on");
+    duration = parseInt(btn.dataset.dur, 10) || 0;
+  });
+});
+
 document.getElementById("start").onclick = () => {
   window.speechSynthesis.cancel();
   seq = buildSeq();
   if (!seq.length) return;
   phaseI = 0;
+  elapsed = 0;
   document.getElementById("start").hidden = true;
   document.getElementById("stop").hidden = false;
   nextPhase();
+  updateElapsed();
   tick = window.setInterval(step, 1000);
 };
 
@@ -196,6 +263,8 @@ document.getElementById("stop").onclick = () => {
   document.getElementById("stop").hidden = true;
   document.getElementById("phase").textContent = "—";
   document.getElementById("num").textContent = "0";
+  document.getElementById("elapsed").hidden = true;
+  elapsed = 0;
 };
 
 applyLang();
