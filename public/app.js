@@ -100,6 +100,7 @@ let left = 0;
 let seq = [];
 let duration = 0;
 let elapsed = 0;
+let audioCtx = null;
 
 function pickVoice() {
   const all = window.speechSynthesis.getVoices();
@@ -129,19 +130,43 @@ function speak(text) {
   window.speechSynthesis.speak(u);
 }
 
+function ensureAudio() {
+  if (!audioCtx) {
+    const Ctor = window.AudioContext || window.webkitAudioContext;
+    if (!Ctor) return null;
+    try {
+      audioCtx = new Ctor();
+    } catch (_) {
+      return null;
+    }
+  }
+  if (audioCtx.state === "suspended") {
+    audioCtx.resume().catch(() => {});
+  }
+  return audioCtx;
+}
+
+function tone(c, freq, startOffset, durationSec, peak) {
+  const o = c.createOscillator();
+  const g = c.createGain();
+  o.type = "sine";
+  o.frequency.setValueAtTime(freq, c.currentTime + startOffset);
+  g.gain.setValueAtTime(0, c.currentTime + startOffset);
+  g.gain.linearRampToValueAtTime(peak, c.currentTime + startOffset + 0.015);
+  g.gain.exponentialRampToValueAtTime(0.0001, c.currentTime + startOffset + durationSec);
+  o.connect(g);
+  g.connect(c.destination);
+  o.start(c.currentTime + startOffset);
+  o.stop(c.currentTime + startOffset + durationSec + 0.02);
+}
+
 function beep() {
   if (!document.getElementById("beep").checked) return;
+  const c = ensureAudio();
+  if (!c) return;
   try {
-    const c = new AudioContext();
-    const o = c.createOscillator();
-    const g = c.createGain();
-    o.connect(g);
-    g.connect(c.destination);
-    o.frequency.value = 880;
-    g.gain.setValueAtTime(0.12, c.currentTime);
-    g.gain.exponentialRampToValueAtTime(0.001, c.currentTime + 0.12);
-    o.start();
-    o.stop(c.currentTime + 0.12);
+    tone(c, 880, 0, 0.18, 0.35);
+    tone(c, 1320, 0.08, 0.22, 0.28);
   } catch (_) {}
 }
 
@@ -309,12 +334,20 @@ document.querySelectorAll(".chips-row--two .chip").forEach((btn) => {
 
 document.getElementById("voice").addEventListener("change", syncVoiceRow);
 
+document.getElementById("beep").addEventListener("change", (e) => {
+  if (e.target.checked) {
+    ensureAudio();
+    beep();
+  }
+});
+
 if (typeof window.speechSynthesis !== "undefined") {
   window.speechSynthesis.getVoices();
   window.speechSynthesis.addEventListener("voiceschanged", () => {});
 }
 
 document.getElementById("start").onclick = () => {
+  ensureAudio();
   window.speechSynthesis.cancel();
   seq = buildSeq();
   if (!seq.length) return;
