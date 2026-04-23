@@ -33,36 +33,29 @@ body {
   position: relative;
   border: 1px solid var(--line);
   box-shadow: 0 24px 60px -32px rgba(0, 230, 200, 0.45);
+  background: #050810;
 }
 
 .zen img {
   display: block;
   width: 100%;
-  height: clamp(140px, 32vw, 200px);
+  height: auto;
+  aspect-ratio: 16 / 9;
   object-fit: cover;
+  object-position: center 55%;
   filter: saturate(1.05);
-  animation: zen-breathe 12s ease-in-out infinite;
 }
 
 .zen figcaption {
   position: absolute;
   inset: auto 0 0 0;
-  padding: 0.85rem 1rem;
-  background: linear-gradient(180deg, transparent, rgba(5, 8, 16, 0.85));
-  font-size: 0.78rem;
-  letter-spacing: 0.12em;
+  padding: 0.7rem 1rem 0.85rem;
+  background: linear-gradient(180deg, transparent, rgba(5, 8, 16, 0.92));
+  font-size: 0.72rem;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
   color: rgba(232, 244, 255, 0.92);
   text-align: center;
-}
-
-@keyframes zen-breathe {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.04); }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .zen img { animation: none; }
 }
 
 header {
