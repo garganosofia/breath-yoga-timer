@@ -68,6 +68,11 @@ const MALE_HINTS = [
   "google uk english male",
 ];
 
+const QUALITY_HINTS = [
+  "natural", "neural", "premium", "enhanced", "studio",
+  "wavenet", "siri", "online", "novelty", "eloquence",
+];
+
 const YOGA = {
   es: [
     { n: "Tadasana", d: "Pies juntos, columna larga, hombros abajo." },
@@ -102,9 +107,10 @@ function pickVoice() {
   const langPrefix = lang === "es" ? "es" : "en";
   const ofLang = all.filter((v) => v.lang && v.lang.toLowerCase().startsWith(langPrefix));
   const pool = ofLang.length ? ofLang : all;
-  const hints = gender === "male" ? MALE_HINTS : FEMALE_HINTS;
-  const match = pool.find((v) => hints.some((h) => v.name.toLowerCase().includes(h)));
-  return match || pool[0] || null;
+  const genderHints = gender === "male" ? MALE_HINTS : FEMALE_HINTS;
+  const matches = pool.filter((v) => genderHints.some((h) => v.name.toLowerCase().includes(h)));
+  const premium = matches.find((v) => QUALITY_HINTS.some((q) => v.name.toLowerCase().includes(q)));
+  return premium || matches[0] || pool[0] || null;
 }
 
 function speak(text) {
@@ -112,7 +118,9 @@ function speak(text) {
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = lang === "es" ? "es-AR" : "en-US";
-  u.rate = 0.92;
+  u.rate = gender === "female" ? 0.78 : 0.85;
+  u.pitch = gender === "female" ? 0.92 : 1;
+  u.volume = 0.9;
   const v = pickVoice();
   if (v) {
     u.voice = v;
