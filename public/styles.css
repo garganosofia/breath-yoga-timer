@@ -6,6 +6,8 @@
   --muted: #7d92b0;
   --cyan: #00e6c8;
   --violet: #9d7dff;
+  --gutter: 1rem;
+  --radius-card: 16px;
   font-family: "Outfit", system-ui, sans-serif;
 }
 
@@ -13,27 +15,32 @@
   box-sizing: border-box;
 }
 
+html,
+body {
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   min-height: 100dvh;
   background:
-    radial-gradient(1200px 600px at 50% -10%, rgba(157, 125, 255, 0.18), transparent 60%),
-    radial-gradient(900px 500px at 50% 110%, rgba(0, 230, 200, 0.12), transparent 60%),
+    radial-gradient(80vw 50vw at 50% -10%, rgba(157, 125, 255, 0.18), transparent 60%),
+    radial-gradient(70vw 45vw at 50% 110%, rgba(0, 230, 200, 0.12), transparent 60%),
     var(--bg);
   color: var(--text);
-  padding: 1rem 1rem 5rem;
   line-height: 1.5;
+  padding-top: max(0.85rem, env(safe-area-inset-top));
+  padding-bottom: max(2.5rem, env(safe-area-inset-bottom));
+  -webkit-tap-highlight-color: transparent;
 }
 
 .zen {
-  margin: 0 auto 1rem;
-  max-width: 480px;
-  border-radius: 20px;
-  overflow: hidden;
+  margin: 0 0 1rem;
   position: relative;
-  border: 1px solid var(--line);
-  box-shadow: 0 24px 60px -32px rgba(0, 230, 200, 0.45);
+  overflow: hidden;
   background: #050810;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
 }
 
 .zen img {
@@ -58,6 +65,14 @@ body {
   text-align: center;
 }
 
+header,
+.tabs,
+.panel,
+footer {
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
 header {
   text-align: center;
   max-width: 480px;
@@ -65,26 +80,34 @@ header {
 }
 
 h1 {
-  font-size: 1.25rem;
+  font-size: 1.35rem;
   margin: 0 0 0.35rem;
+  letter-spacing: -0.01em;
 }
 
 .sub {
   color: var(--muted);
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   margin: 0;
 }
 
 .tabs {
   display: flex;
-  gap: 0.35rem;
+  gap: 0.5rem;
   justify-content: center;
   margin: 1rem 0;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .tabs button {
+  flex: 1;
   font: inherit;
-  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  min-height: 44px;
+  padding: 0.6rem 1rem;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--card);
@@ -111,30 +134,31 @@ h1 {
 .grid4 {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 0.65rem;
+  gap: 0.75rem;
 }
 
 label span {
   display: block;
-  font-size: 0.72rem;
+  font-size: 0.78rem;
   color: var(--muted);
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.3rem;
 }
 
 input[type="number"] {
   width: 100%;
-  padding: 0.55rem 0.5rem;
-  border-radius: 10px;
+  min-height: 48px;
+  padding: 0.65rem 0.6rem;
+  border-radius: 12px;
   border: 1px solid var(--line);
   background: #0a1222;
   color: var(--text);
-  font-size: 1rem;
+  font-size: 16px;
 }
 
 .row {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
+  gap: 1rem;
   align-items: center;
   margin: 1rem 0;
 }
@@ -142,22 +166,29 @@ input[type="number"] {
 .row label {
   display: flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  color: var(--muted);
+  gap: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--text);
+  min-height: 32px;
+}
+
+.row input[type="checkbox"] {
+  width: 22px;
+  height: 22px;
+  accent-color: var(--cyan);
 }
 
 .big {
   text-align: center;
-  padding: 2rem 1rem;
-  border-radius: 20px;
+  padding: 1.75rem 1rem;
+  border-radius: var(--radius-card);
   border: 1px solid var(--line);
   background: radial-gradient(ellipse at 50% 0%, rgba(0, 230, 200, 0.12), transparent 60%), var(--card);
   margin: 1rem 0;
 }
 
 .big .phase {
-  font-size: 0.75rem;
+  font-size: 0.78rem;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--cyan);
@@ -165,16 +196,16 @@ input[type="number"] {
 }
 
 .big .n {
-  font-size: clamp(3.5rem, 18vw, 5rem);
+  font-size: clamp(4rem, 22vw, 5.5rem);
   font-weight: 800;
   font-variant-numeric: tabular-nums;
   line-height: 1;
 }
 
 .big .elapsed {
-  margin-top: 0.65rem;
+  margin-top: 0.75rem;
   font-family: ui-monospace, "JetBrains Mono", monospace;
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   color: var(--muted);
   letter-spacing: 0.15em;
 }
@@ -188,22 +219,21 @@ input[type="number"] {
 }
 
 .chips-row {
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   gap: 0.45rem;
-  flex-wrap: wrap;
   margin-bottom: 1rem;
 }
 
 .chip {
-  flex: 1;
-  min-width: 72px;
-  padding: 0.55rem 0.75rem;
+  min-height: 44px;
+  padding: 0.55rem 0.4rem;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--card);
   color: var(--muted);
   font: inherit;
-  font-size: 0.82rem;
+  font-size: 0.85rem;
   font-weight: 600;
   cursor: pointer;
   transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
@@ -221,21 +251,27 @@ input[type="number"] {
 }
 
 .actions {
-  display: flex;
-  gap: 0.5rem;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.6rem;
+  margin-top: 0.5rem;
+}
+
+.actions:has(button:not([hidden]) ~ button:not([hidden])) {
+  grid-template-columns: 1fr 1fr;
 }
 
 button.primary,
 button.danger {
-  flex: 1;
-  min-width: 120px;
-  padding: 0.85rem;
+  width: 100%;
+  min-height: 52px;
+  padding: 0.95rem;
   border: none;
-  border-radius: 12px;
+  border-radius: 14px;
   font-weight: 700;
   cursor: pointer;
-  font-size: 0.95rem;
+  font-size: 1rem;
+  font-family: inherit;
 }
 
 button.primary {
@@ -264,25 +300,28 @@ button.danger {
 
 .pose p {
   margin: 0;
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   color: var(--muted);
 }
 
 .lang {
   display: flex;
   justify-content: center;
-  gap: 0.35rem;
-  margin-top: 0.75rem;
+  gap: 0.4rem;
+  margin-top: 0.85rem;
 }
 
 .lang button {
-  padding: 0.35rem 0.85rem;
+  min-height: 36px;
+  padding: 0.4rem 1rem;
   border-radius: 999px;
   border: 1px solid var(--line);
   background: var(--card);
   color: var(--text);
   cursor: pointer;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
+  font-family: inherit;
+  font-weight: 600;
 }
 
 .lang button.is-on {
@@ -293,10 +332,28 @@ button.danger {
 footer {
   text-align: center;
   margin-top: 2rem;
-  font-size: 0.75rem;
+  font-size: 0.8rem;
   color: var(--muted);
 }
 
 footer a {
   color: var(--cyan);
+}
+
+@media (min-width: 600px) {
+  :root {
+    --gutter: 1.25rem;
+  }
+
+  .zen {
+    margin: 0 auto 1rem;
+    max-width: 480px;
+    border-radius: 20px;
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 60px -32px rgba(0, 230, 200, 0.45);
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
 }
