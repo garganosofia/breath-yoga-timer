@@ -20,6 +20,7 @@ const T = {
     min10: "10 min",
     min15: "15 min",
     done: "Sesión completa",
+    zen: "Respira. El silencio también es un mantra.",
   },
   en: {
     title: "Guided breathing",
@@ -42,6 +43,7 @@ const T = {
     min10: "10 min",
     min15: "15 min",
     done: "Session complete",
+    zen: "Breathe. Silence is also a mantra.",
   },
 };
 
@@ -121,6 +123,7 @@ function applyLang() {
   document.getElementById("c-5").textContent = x.min5;
   document.getElementById("c-10").textContent = x.min10;
   document.getElementById("c-15").textContent = x.min15;
+  document.getElementById("zen-caption").textContent = x.zen;
   renderYoga();
 }
 
