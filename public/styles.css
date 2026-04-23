@@ -155,6 +155,59 @@ input[type="number"] {
   font-size: 16px;
 }
 
+.stepper {
+  display: grid;
+  grid-template-columns: 44px 1fr 44px;
+  align-items: stretch;
+  gap: 0;
+  border-radius: 12px;
+  overflow: hidden;
+  border: 1px solid var(--line);
+  background: #0a1222;
+}
+
+.stepper__btn {
+  border: none;
+  background: transparent;
+  color: var(--cyan);
+  font: inherit;
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  transition: background 0.12s ease;
+}
+
+.stepper__btn:hover {
+  background: rgba(0, 230, 200, 0.08);
+}
+
+.stepper__btn:active {
+  background: rgba(0, 230, 200, 0.18);
+}
+
+.stepper__val {
+  border: none;
+  background: transparent;
+  color: var(--text);
+  font: inherit;
+  font-size: 1.15rem;
+  font-weight: 600;
+  text-align: center;
+  min-height: 48px;
+  font-variant-numeric: tabular-nums;
+  width: 100%;
+  padding: 0;
+}
+
+.stepper__val:focus {
+  outline: 2px solid var(--cyan);
+  outline-offset: -2px;
+}
+
 .row {
   display: flex;
   flex-wrap: wrap;

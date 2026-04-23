@@ -332,6 +332,63 @@ document.querySelectorAll(".chips-row--two .chip").forEach((btn) => {
   });
 });
 
+function stepValue(targetId, delta) {
+  const el = document.getElementById(targetId);
+  if (!el) return;
+  const min = parseInt(el.dataset.min, 10);
+  const max = parseInt(el.dataset.max, 10);
+  const current = parseInt(el.value, 10) || 0;
+  const next = Math.max(min, Math.min(max, current + delta));
+  el.value = String(next);
+}
+
+document.querySelectorAll(".stepper__btn").forEach((btn) => {
+  let holdTimer = null;
+  let repeatTimer = null;
+  const target = btn.dataset.target;
+  const step = parseInt(btn.dataset.step, 10);
+
+  function trigger() {
+    stepValue(target, step);
+    if (navigator.vibrate) navigator.vibrate(8);
+  }
+
+  function startHold() {
+    trigger();
+    holdTimer = window.setTimeout(() => {
+      repeatTimer = window.setInterval(trigger, 90);
+    }, 350);
+  }
+
+  function endHold() {
+    if (holdTimer) window.clearTimeout(holdTimer);
+    if (repeatTimer) window.clearInterval(repeatTimer);
+    holdTimer = null;
+    repeatTimer = null;
+  }
+
+  btn.addEventListener("pointerdown", (e) => {
+    e.preventDefault();
+    startHold();
+  });
+  btn.addEventListener("pointerup", endHold);
+  btn.addEventListener("pointerleave", endHold);
+  btn.addEventListener("pointercancel", endHold);
+});
+
+document.querySelectorAll(".stepper__val").forEach((input) => {
+  input.addEventListener("blur", () => {
+    const min = parseInt(input.dataset.min, 10);
+    const max = parseInt(input.dataset.max, 10);
+    const n = parseInt(input.value, 10);
+    if (Number.isNaN(n)) {
+      input.value = String(min);
+    } else {
+      input.value = String(Math.max(min, Math.min(max, n)));
+    }
+  });
+});
+
 document.getElementById("voice").addEventListener("change", syncVoiceRow);
 
 document.getElementById("beep").addEventListener("change", (e) => {
