@@ -225,6 +225,18 @@ input[type="number"] {
   margin-bottom: 1rem;
 }
 
+.chips-row--two {
+  grid-template-columns: 1fr 1fr;
+}
+
+.voice-row {
+  margin-bottom: 0.5rem;
+}
+
+.voice-row[hidden] {
+  display: none;
+}
+
 .chip {
   min-height: 44px;
   padding: 0.55rem 0.4rem;

@@ -21,6 +21,9 @@ const T = {
     min15: "15 min",
     done: "Sesión completa",
     zen: "Respira. El silencio también es un mantra.",
+    voiceGender: "Tipo de voz",
+    female: "Femenina",
+    male: "Masculina",
   },
   en: {
     title: "Guided breathing",
@@ -44,8 +47,26 @@ const T = {
     min15: "15 min",
     done: "Session complete",
     zen: "Breathe. Silence is also a mantra.",
+    voiceGender: "Voice type",
+    female: "Female",
+    male: "Male",
   },
 };
+
+const FEMALE_HINTS = [
+  "female", "femenina", "femenino", "mujer", "woman",
+  "samantha", "karen", "victoria", "monica", "mónica", "paulina",
+  "lupe", "marisol", "esperanza", "elena", "isabela", "sabina",
+  "zira", "hazel", "fiona", "moira", "tessa", "veena",
+  "google español", "google us english", "google uk english female",
+];
+
+const MALE_HINTS = [
+  "male", "masculino", "masculina", "hombre", "man",
+  "diego", "jorge", "daniel", "alex", "fred", "carlos",
+  "juan", "miguel", "enrique", "david", "mark", "rishi", "thomas", "guy",
+  "google uk english male",
+];
 
 const YOGA = {
   es: [
@@ -67,6 +88,7 @@ const YOGA = {
 };
 
 let lang = "es";
+let gender = "female";
 let tick = null;
 let phaseI = 0;
 let left = 0;
@@ -74,12 +96,28 @@ let seq = [];
 let duration = 0;
 let elapsed = 0;
 
+function pickVoice() {
+  const all = window.speechSynthesis.getVoices();
+  if (!all || !all.length) return null;
+  const langPrefix = lang === "es" ? "es" : "en";
+  const ofLang = all.filter((v) => v.lang && v.lang.toLowerCase().startsWith(langPrefix));
+  const pool = ofLang.length ? ofLang : all;
+  const hints = gender === "male" ? MALE_HINTS : FEMALE_HINTS;
+  const match = pool.find((v) => hints.some((h) => v.name.toLowerCase().includes(h)));
+  return match || pool[0] || null;
+}
+
 function speak(text) {
   if (!document.getElementById("voice").checked) return;
   window.speechSynthesis.cancel();
   const u = new SpeechSynthesisUtterance(text);
   u.lang = lang === "es" ? "es-AR" : "en-US";
   u.rate = 0.92;
+  const v = pickVoice();
+  if (v) {
+    u.voice = v;
+    u.lang = v.lang;
+  }
   window.speechSynthesis.speak(u);
 }
 
@@ -124,7 +162,15 @@ function applyLang() {
   document.getElementById("c-10").textContent = x.min10;
   document.getElementById("c-15").textContent = x.min15;
   document.getElementById("zen-caption").textContent = x.zen;
+  document.getElementById("lb-voice-gender").textContent = x.voiceGender;
+  document.getElementById("g-f").textContent = x.female;
+  document.getElementById("g-m").textContent = x.male;
   renderYoga();
+}
+
+function syncVoiceRow() {
+  const on = document.getElementById("voice").checked;
+  document.getElementById("voice-row").hidden = !on;
 }
 
 function fmtTime(totalSeconds) {
@@ -237,13 +283,28 @@ document.getElementById("tab-y").onclick = () => {
   document.getElementById("p-breath").classList.remove("is-on");
 };
 
-document.querySelectorAll(".chip").forEach((btn) => {
+document.querySelectorAll(".chips-row:not(.chips-row--two) .chip").forEach((btn) => {
   btn.addEventListener("click", () => {
-    document.querySelectorAll(".chip").forEach((b) => b.classList.remove("is-on"));
+    document.querySelectorAll(".chips-row:not(.chips-row--two) .chip").forEach((b) => b.classList.remove("is-on"));
     btn.classList.add("is-on");
     duration = parseInt(btn.dataset.dur, 10) || 0;
   });
 });
+
+document.querySelectorAll(".chips-row--two .chip").forEach((btn) => {
+  btn.addEventListener("click", () => {
+    document.querySelectorAll(".chips-row--two .chip").forEach((b) => b.classList.remove("is-on"));
+    btn.classList.add("is-on");
+    gender = btn.dataset.gender || "female";
+  });
+});
+
+document.getElementById("voice").addEventListener("change", syncVoiceRow);
+
+if (typeof window.speechSynthesis !== "undefined") {
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.addEventListener("voiceschanged", () => {});
+}
 
 document.getElementById("start").onclick = () => {
   window.speechSynthesis.cancel();
@@ -271,3 +332,4 @@ document.getElementById("stop").onclick = () => {
 };
 
 applyLang();
+syncVoiceRow();
